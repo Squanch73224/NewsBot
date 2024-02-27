@@ -1,0 +1,34 @@
+import requests
+
+# ENTER your API key from News API
+API_KEY = "YOUR_API_KEY_GOES_HERE"
+
+# News API URL
+NEWS_API_URL = "https://newsapi.org/v2/everything"
+
+# Define your search query
+query = "ENTER_TOPICS_TO_SEARCH_FOR"  # Add space/AND/OR in between words as needed
+
+# Define parameters
+parameters = {
+    "apiKey": API_KEY,
+    "q": query,
+    "language": "en",
+    "sortBy": "publishedAt"
+}
+
+# Fetch news articles
+response = requests.get(NEWS_API_URL, params=parameters)
+
+# Conditional if succeeds or fails
+if response.status_code == 200:
+    # Extract the articles from the response
+    articles = response.json()["articles"]
+    for article in articles:
+        print(article["title"])
+        print(article["publishedAt"])
+        print(article["description"])
+        print(article["url"])
+        print()
+else:
+    print("Failed to fetch news:", response.json()["message"])
