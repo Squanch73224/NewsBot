@@ -1,0 +1,78 @@
+import requests
+
+# Insert API Key from News API
+API_KEY = "Your API Goes Here"
+
+# URL for the News API
+NEWS_API_URL = "https://newsapi.org/v2/everything"
+
+# Define search queries for each topic
+queries = {
+    "crypto": "bitcoin OR ethereum OR solana OR nft OR blockchain",
+    "stock": "nvidia OR meta OR google OR microsoft OR advanced micro devices",
+    "topics": "ai OR virtual reality OR quantum"
+}
+
+# Trustworthy news sources
+publishers = {
+    "crypto": ["coindesk", "coinmarketwatch", "twitter"],
+    "stock": ["cnbc", "bloomberg", "twitter"],
+    "topics": ["openai.com", "sciencedaily.com", "techcrunch.com"]
+}
+
+# Define query parameters
+def fetch_and_print_crypto_news():
+    query = queries["crypto"]
+    parameters = {
+        "apiKey": API_KEY,
+        "q": query,
+        "language": "en",
+        "sortBy": "publishedAt",
+        "domains": ",".join(publishers["crypto"])
+    }
+    fetch_and_print_news("Crypto", parameters)
+
+def fetch_and_print_stock_news():
+    query = queries["stock"]
+    parameters = {
+        "apiKey": API_KEY,
+        "q": query,
+        "language": "en",
+        "sortBy": "publishedAt",
+        "domains": ",".join(publishers["stock"])
+    }
+    fetch_and_print_news("Stock", parameters)
+
+def fetch_and_print_topics_news():
+    query = queries["topics"]
+    parameters = {
+        "apiKey": API_KEY,
+        "q": query,
+        "language": "en",
+        "sortBy": "publishedAt",
+        "domains": ",".join(publishers["topics"])
+    }
+    fetch_and_print_news("Topics", parameters)
+
+# scan through news articles
+def fetch_and_print_news(topic, parameters):
+    # grab news article
+    response = requests.get(NEWS_API_URL, params=parameters)
+
+    # Conditional if fails to fetch news
+    if response.status_code == 200:
+        # Extract the articles from the response
+        articles = response.json()["articles"]
+        for article in articles:
+            print(article["title"])
+            print(article["publishedAt"])
+            print(article["description"])
+            print(article["url"])
+            print()
+    else:
+        print(f"Failed to fetch {topic} news:", response.json()["message"])
+
+# Print news articles for each topic
+fetch_and_print_crypto_news()
+fetch_and_print_stock_news()
+fetch_and_print_topics_news()
